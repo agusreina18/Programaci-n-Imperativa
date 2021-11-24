@@ -1,0 +1,119 @@
+// Te proveemos la siguiente plantilla que tiene dos partes:
+// - Desarrollo de las consignas, donde escribirás el código que responda a los enunciados
+// - Ejecución de las consignas, donde ejecutarás los métodos correspondientes mostrando por consola sus resultados
+const jsonHelper = require(__dirname + "/lecturaEscritura.js");
+
+const tickets = jsonHelper.leerJson("tickets");
+/*******************************/
+/* Desarrollo de las consignas */
+/*******************************/
+
+// 1.
+const mesaDeAyuda = {
+  // 2.
+
+  // 2.A.
+  tickets: tickets,
+  // 2.B.
+  listarTickets: function (arrayTickets) {
+    return arrayTickets.forEach((ticket) => {
+      console.log(
+        "Ticket " +
+          ticket.id +
+          " de " +
+          ticket.usuario +
+          " con espera de " +
+          ticket.minutosDeEspera +
+          " minutos, está " +
+          (ticket.estaResuelto ? " resuelto" : " NO resuelto") +
+          " con prioridad " +
+          ticket.prioridad
+      );
+    });
+  },
+  // 2.C.
+  buscarPorEmail: function (email) {
+    return this.tickets.find((ticket) => ticket.email === email);
+  },
+  // 2.D.
+  ticketsResueltos: function () {
+    return this.tickets.filter((ticket) => ticket.estaResuelto === true);
+  },
+  // 2.E.
+  ordenarPorEspera: function (arrayTickets) {
+    return arrayTickets.sort(
+      (espera1, espera2) => espera2.minutosDeEspera - espera1.minutosDeEspera
+    );
+  },
+  // 2.F.
+  traerConMayorTiempoDeEspera: function () {
+    const ticketsOrdenadosPorEspera = this.ordenarPorEspera(this.tickets);
+    const ticketConMayorTiempoDeEspera = ticketsOrdenadosPorEspera.slice(0, 1);
+    return ticketConMayorTiempoDeEspera;
+  },
+  // 2.G.
+  esperaTotalResueltos: function () {
+    const ticketsResueltos = this.ticketsResueltos();
+    const duracionTotal = ticketsResueltos.reduce(
+      (acumulador, minutos) => acumulador + minutos.minutosDeEspera,
+      0
+    );
+    return (
+      "La duración de todos los tickets resueltos es de " +
+      duracionTotal +
+      " minutos."
+    );
+  },
+  // 2.H.
+  resolverTicketPorEmail: function (emailAResolver) {
+    this.tickets.find(
+      (ticket) => ticket.email === emailAResolver
+    ).estaResuelto = true;
+    jsonHelper.escribirJson("tickets", this.tickets);
+    return this.tickets.find((ticket) => ticket.email === emailAResolver);
+  },
+  // 2.I.
+  eliminarPorEmail: function (emailAEliminar) {
+    const buscarEmail = this.buscarPorEmail(emailAEliminar);
+    this.tickets.sort((a, b) => a.id - b.id);
+    this.tickets.splice(buscarEmail.id - 1, 1);
+    jsonHelper.escribirJson("tickets", this.tickets);
+    return buscarEmail;
+  },
+};
+
+/******************************/
+/* Ejecución de las consignas */
+/******************************/
+
+console.log("***** 2.B. *****");
+mesaDeAyuda.listarTickets(mesaDeAyuda.tickets);
+console.log("****************\n");
+
+console.log("***** 2.C. *****");
+console.log(mesaDeAyuda.buscarPorEmail("ginavelez@ginkle.com"));
+console.log("****************\n");
+
+console.log("***** 2.D. *****");
+console.log(mesaDeAyuda.listarTickets(mesaDeAyuda.ticketsResueltos()));
+console.log("****************\n");
+
+console.log("***** 2.E. *****");
+console.table(mesaDeAyuda.ordenarPorEspera(mesaDeAyuda.tickets));
+console.log("****************\n");
+
+console.log("***** 2.F. *****");
+console.log(mesaDeAyuda.traerConMayorTiempoDeEspera());
+console.log("****************\n");
+
+console.log("***** 2.G. *****");
+console.log(mesaDeAyuda.esperaTotalResueltos());
+console.log("****************\n");
+
+console.log("***** 2.H. *****");
+console.log(mesaDeAyuda.resolverTicketPorEmail("jamesvalenzuela@ginkle.com"));
+console.log("****************\n");
+
+console.log("***** 2.I. *****");
+console.log(mesaDeAyuda.eliminarPorEmail("jamesvalenzuela@ginkle.com"));
+console.log("****************\n");
